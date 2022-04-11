@@ -3,6 +3,7 @@ package cn.com.sanzang.controller;
 import ch.qos.logback.core.util.FileUtil;
 import cn.com.sanzang.vo.FileVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,15 +29,18 @@ import java.util.Map;
 @Slf4j
 public class FileController {
 
+    @Value("${sanzang.film.rootpath:files}")
+    private String rootPath = "files";
+
     @RequestMapping(value = "/files", method = RequestMethod.GET)
     public Map<String, List<FileVO>> zbyjbsx(@RequestParam(value = "path", required = false) String path) {
         Map<String, List<FileVO>> infos = new HashMap<>();
 
         // 处理文件路径
         File basePathFile = new File(genUri());
-        String basePath = basePathFile.getAbsolutePath() +  File.separator + "files" + File.separator;
+        String basePath = basePathFile.getAbsolutePath() +  "/" + rootPath + "/";
         if (StringUtils.isEmpty(path)) {
-            path = "." + File.separator;
+            path = "./";
         }
 
         // 读取文件
@@ -59,12 +63,14 @@ public class FileController {
         for (File file : files) {
             FileVO fileVO = new FileVO();
             fileVO.setName(file.getName());
-            // 此处不是用绝对路径，使用文件的相对路径
-            fileVO.setPath(path + file.getName());
 
             if (file.isDirectory()) {
+                // 此处不是用绝对路径，使用文件的相对路径
+                fileVO.setPath(path + file.getName() + "/");
                 dirVOS.add(fileVO);
             } else {
+                // 此处不是用绝对路径，使用文件的相对路径
+                fileVO.setPath(path + file.getName());
                 fileVOS.add(fileVO);
             }
         }
