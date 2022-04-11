@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>电影列表</title>
+</head>
+<body>
+
+    <h1>视频或其他</h1>
+    <p th:each="file: ${files}">
+        <a th:href="${file.path}">${file.name}</a> <br/>
+    </p>
+
+    <h1>下级目录</h1>
+    <p th:each="file: ${dirs}">
+        <a th:href="index.html?path=${file.path}">${file.name}</a> <br/>
+    </p>
+</body>
+</html>
