@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>[%-5p][%d{yyyy/MM/dd HH:mm:ss.SSS}][%.-32t][rid:%mdc{requestid},sid:%mdc{spanid},uid:%mdc{userid},tid:%mdc{traceid},swjg:%mdc{swjgDm}] %m [%.50logger]%ex%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="common" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>sanzang-filem/logs/common.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>sanzang-filem/logs/common.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <MaxHistory>20</MaxHistory>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <append>true</append>
+        <encoder>
+            <pattern>[%-5p][%d{yyyy/MM/dd HH:mm:ss.SSS}][%.-32t][rid:%mdc{requestid},sid:%mdc{spanid},uid:%mdc{userid},tid:%mdc{traceid},swjg:%mdc{swjgDm}] %m [%.50logger]%rEx{3}%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>sanzang-filem/logs/error.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>[%-5p][%d{yyyy/MM/dd HH:mm:ss.SSS}][%t][rid:%mdc{requestid},sid:%mdc{spanid},uid:%mdc{userid},tid:%mdc{traceid},swjg:%mdc{swjgDm}] %m [%logger]%ex%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>sanzang-filem/logs/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <MaxHistory>20</MaxHistory>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="its.mybatis.sql" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>sanzang-filem/logs/sql.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>[%-5p][%d{yyyy/MM/dd HH:mm:ss.SSS}][%.-32t][rid:%mdc{requestid},sid:%mdc{spanid},uid:%mdc{userid},tid:%mdc{traceid},swjg:%mdc{swjgDm}] %m [%.50logger]%ex%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>sanzang-filem/logs/sql.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <MaxHistory>20</MaxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="mapper" level="info" additivity="false">
+        <appender-ref ref="its.mybatis.sql"/>
+    </logger>
+
+    <logger name="parameterLog" level="info"/>
+
+    <root level="debug">
+        <appender-ref ref="console"/>
+    </root>
+
+    <root level="debug">
+        <appender-ref ref="common"/>
+        <appender-ref ref="error"/>
+    </root>
+</configuration>
