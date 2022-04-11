@@ -3,8 +3,6 @@ package cn.com.sanzang.controller;
 import ch.qos.logback.core.util.FileUtil;
 import cn.com.sanzang.vo.FileVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,15 +26,17 @@ import java.util.Map;
  */
 @RestController
 @Slf4j
-public class IndexController {
+public class FileController {
 
-    @RequestMapping(value = "index.html", method = RequestMethod.GET)
-    public String zbyjbsx(Model model, @RequestParam(value = "path", required = false) String path) {
+    @RequestMapping(value = "/files", method = RequestMethod.GET)
+    public Map<String, List<FileVO>> zbyjbsx(@RequestParam(value = "path", required = false) String path) {
+        Map<String, List<FileVO>> infos = new HashMap<>();
+
         // 处理文件路径
         File basePathFile = new File(genUri());
-        String basePath = basePathFile.getAbsolutePath();
+        String basePath = basePathFile.getAbsolutePath() +  File.separator + "files" + File.separator;
         if (StringUtils.isEmpty(path)) {
-            path = "./";
+            path = "." + File.separator;
         }
 
         // 读取文件
@@ -53,14 +53,14 @@ public class IndexController {
 
         if (null == files) {
             //没有文件直接返回
-            return "index";
+            return new HashMap<>();
         }
 
         for (File file : files) {
             FileVO fileVO = new FileVO();
             fileVO.setName(file.getName());
             // 此处不是用绝对路径，使用文件的相对路径
-            fileVO.setPath(path + File.pathSeparator + file.getName());
+            fileVO.setPath(path + file.getName());
 
             if (file.isDirectory()) {
                 dirVOS.add(fileVO);
@@ -69,10 +69,10 @@ public class IndexController {
             }
         }
 
-        model.addAttribute("files", fileVOS);
-        model.addAttribute("dirs", dirVOS);
+        infos.put("files", fileVOS);
+        infos.put("dirs", dirVOS);
 
-        return "index";
+        return infos;
     }
 
     @RequestMapping(value = "testFiles", method = RequestMethod.GET)
